@@ -10,7 +10,8 @@ function calendarHtml(now) {
         html += '<tr class="calendar__numbers">';
         for(let i = 0; i < 7 ; i++){
             let className = day.getMonth() !== now.getMonth() ? ' class="unactive"' : '';
-            html += '<td' + className + '><span>' + day.getDate() + '</span></td>';
+            let currentDate = add0(day.getDate()) + '.' + add0(day.getMonth() + 1) + '.' + day.getFullYear();
+            html += '<td data-date="' + currentDate + '"' + className + '><span>' + day.getDate() + '</span></td>';
             day.setDate(day.getDate()+1);
         }
         html += '</tr>';
@@ -25,7 +26,30 @@ function calendarButtons() {
         now.setMonth(now.getMonth() + +this.dataset.m);
         calendarTable.innerHTML = calendarHtml(now);
         span.innerText = months[now.getMonth()] + ', ' + now.getFullYear();
+        tdClicks();
     }
+}
+function tdClicks() {
+    let td = calendarTable.querySelectorAll('td:not(.unactive)');
+    td.forEach(td => {
+        td.removeEventListener('click', tdClick);
+        td.addEventListener('click', tdClick);
+    });
+    function tdClick() {
+       let calendar;
+       let elem = this;
+        do {
+            if (elem.classList.contains('calendar')) {
+                calendar = elem;
+                break;
+            }
+        } while (elem = elem.parentElement);
+        if (!calendar) return;
+        calendar.targetButton.innerText = this.dataset.date;
+    }
+}
+function add0(n) {
+    return n > 9 ? n : '0' + n;
 }
 
 let now = new Date();
@@ -34,5 +58,8 @@ calendarTable.innerHTML = calendarHtml(now);
 let span = document.querySelector('.calendar__title-text');
 let months  = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 span.innerText = months[now.getMonth()] + ', ' + now.getFullYear();
+tdClicks();
 calendarButtons();
-
+let today = new Date();
+today = add0(today.getDate()) + '.' + add0(today.getMonth() + 1) + '.' + today.getFullYear();
+document.querySelectorAll('.header__bottom-calendar').forEach(e => e.innerHTML = today);

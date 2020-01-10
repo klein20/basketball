@@ -45,14 +45,15 @@
             SliderTeamUl.style.left = left + 'px';
         }
     }
-
     function showCalendar(e) {
+        // this - button
         e.stopPropagation();
         setPositionCalendar(this);
-        document.querySelector('.calendar').style.display = 'block';
+        let calendar = document.querySelector('.calendar');
+        calendar.style.display = 'block';
+        calendar.targetButton = this;
         window.addEventListener('click', windowClick);
     }
-
     function setPositionCalendar(button){
         let calendar = document.querySelector('.calendar');
         let rect = button.getBoundingClientRect();
@@ -61,7 +62,6 @@
         calendar.style.left = left + 'px';
         calendar.style.top = top + 'px';
     }
-
     function hideCalendar() {
         let button = this;
         let calendar = document.querySelector('.calendar');
@@ -118,6 +118,6 @@
     });
     window.addEventListener('stopPoint', function() {
         console.log('dsfdsf');
-    })
+    });
 
 })();
